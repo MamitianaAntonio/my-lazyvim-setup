@@ -1,5 +1,6 @@
 {
   "extras": [
+    "lazyvim.plugins.extras.ai.copilot",
     "lazyvim.plugins.extras.coding.luasnip",
     "lazyvim.plugins.extras.coding.mini-snippets",
     "lazyvim.plugins.extras.editor.harpoon2",
@@ -7,7 +8,10 @@
     "lazyvim.plugins.extras.editor.leap",
     "lazyvim.plugins.extras.editor.mini-diff",
     "lazyvim.plugins.extras.editor.mini-files",
+    "lazyvim.plugins.extras.editor.mini-move",
+    "lazyvim.plugins.extras.editor.navic",
     "lazyvim.plugins.extras.editor.neo-tree",
+    "lazyvim.plugins.extras.editor.outline",
     "lazyvim.plugins.extras.formatting.prettier",
     "lazyvim.plugins.extras.lang.java",
     "lazyvim.plugins.extras.lang.json",
@@ -16,6 +20,9 @@
     "lazyvim.plugins.extras.lang.typescript",
     "lazyvim.plugins.extras.lsp.neoconf",
     "lazyvim.plugins.extras.ui.alpha",
+    "lazyvim.plugins.extras.ui.indent-blankline",
+    "lazyvim.plugins.extras.ui.mini-indentscope",
+    "lazyvim.plugins.extras.ui.smear-cursor",
     "lazyvim.plugins.extras.util.project"
   ],
   "install_version": 8,
