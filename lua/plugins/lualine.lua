@@ -4,59 +4,69 @@ return {
     event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = function()
-      -- Onedark Darker color palette with highly vibrant mode colors
       local colors = {
-        bg = "#1c2526", -- Darker background
-        fg = "#abb2bf", -- Light foreground
-        yellow = "#e5c07b", -- Onedark yellow
-        cyan = "#56b6c2", -- Onedark cyan
-        green = "#98c379", -- Onedark green
-        red = "#e06c75", -- Onedark red
-        purple = "#c678dd", -- Onedark purple
-        blue = "#61afef", -- Onedark blue
-        gray = "#3e4451", -- Subtle gray for inactive elements
-        mode_normal_fg = "#00b7eb", -- Vivid blue for Normal mode
-        mode_insert_fg = "#00ff9f", -- Vivid green for Insert mode
-        mode_visual_fg = "#ff00ff", -- Vivid magenta for Visual mode
-        mode_replace_fg = "#ff4d4d", -- Vivid red for Replace mode
-        mode_command_fg = "#ffd700", -- Vivid yellow for Command mode
-        mode_normal_bg = "#004a6b", -- Darker vibrant blue
-        mode_insert_bg = "#006633", -- Darker vibrant green
-        mode_visual_bg = "#660066", -- Darker vibrant magenta
-        mode_replace_bg = "#660000", -- Darker vibrant red
-        mode_command_bg = "#665500", -- Darker vibrant yellow
+        bg = "#282c34",
+        fg = "#abb2bf",
+        gray = "#3e4451",
+        red = "#e06c75",
+        green = "#98c379",
+        yellow = "#e5c07b",
+        blue = "#61afef",
+        purple = "#c678dd",
+        cyan = "#56b6c2",
+
+        mode_normal = { fg = "#282c34", bg = "#61afef" },
+        mode_insert = { fg = "#282c34", bg = "#98c379" },
+        mode_visual = { fg = "#282c34", bg = "#c678dd" },
+        mode_replace = { fg = "#282c34", bg = "#e06c75" },
+        mode_command = { fg = "#282c34", bg = "#e5c07b" },
       }
 
-      -- Function to get mode-specific icon
       local function mode_icon(mode)
         local icons = {
-          normal = "󰅬 ", -- Terminal-like icon
-          insert = "󰌌 ", -- Pencil/edit icon
-          visual = "󰉧 ", -- Eye/visual icon
-          replace = "󰛔 ", -- Replace/overwrite icon
-          command = "󰘳 ", -- Command-line icon
+          n = " ",
+          i = " ",
+          v = " ",
+          V = " ",
+          R = " ",
+          c = " ",
         }
-        return icons[mode:lower()] or "󰟶 " -- Fallback icon
+        return icons[mode] or " "
       end
 
-      local config = {
+      -- Frames animation : points plus petits, serrés
+      local frames = {
+        "····",
+        "····",
+        "····",
+        "····",
+      }
+      local current_frame = 1
+
+      local function animated_dots()
+        local dots = frames[current_frame]
+        current_frame = (current_frame % #frames) + 1
+        return "%#AnimatedDots#" .. dots .. "%*"
+      end
+
+      vim.api.nvim_set_hl(0, "AnimatedDots", { fg = colors.purple, bg = colors.gray })
+
+      -- Timer moins fréquent (400ms)
+      local timer = vim.loop.new_timer()
+      timer:start(
+        0,
+        400,
+        vim.schedule_wrap(function()
+          vim.cmd("redrawstatus")
+        end)
+      )
+
+      return {
         options = {
           icons_enabled = true,
-          theme = {
-            normal = {
-              a = { fg = colors.mode_normal_fg, bg = colors.mode_normal_bg, gui = "bold" },
-              b = { fg = colors.fg, bg = colors.gray },
-              c = { fg = colors.fg, bg = colors.bg },
-            },
-            insert = { a = { fg = colors.mode_insert_fg, bg = colors.mode_insert_bg, gui = "bold" } },
-            visual = { a = { fg = colors.mode_visual_fg, bg = colors.mode_visual_bg, gui = "bold" } },
-            replace = { a = { fg = colors.mode_replace_fg, bg = colors.mode_replace_bg, gui = "bold" } },
-            command = { a = { fg = colors.mode_command_fg, bg = colors.mode_command_bg, gui = "bold" } },
-            inactive = { c = { fg = colors.gray, bg = colors.bg } },
-          },
+          theme = nil,
           component_separators = { left = "│", right = "│" },
-          section_separators = { left = "▎", right = "▎" }, -- Subtle separators for style
-          disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter" } },
+          section_separators = { left = "", right = "" },
           globalstatus = true,
         },
         sections = {
@@ -64,62 +74,77 @@ return {
             {
               "mode",
               fmt = function(str)
-                local mode = str:lower()
-                return mode_icon(mode) .. str:upper() -- Icon + full mode name in uppercase
+                return mode_icon(vim.fn.mode()) .. str:sub(1, 1)
               end,
               color = function()
-                local mode = vim.fn.mode():lower()
-                local colors_map = {
-                  normal = { fg = colors.mode_normal_fg, bg = colors.mode_normal_bg, gui = "bold" },
-                  insert = { fg = colors.mode_insert_fg, bg = colors.mode_insert_bg, gui = "bold" },
-                  visual = { fg = colors.mode_visual_fg, bg = colors.mode_visual_bg, gui = "bold" },
-                  replace = { fg = colors.mode_replace_fg, bg = colors.mode_replace_bg, gui = "bold" },
-                  command = { fg = colors.mode_command_fg, bg = colors.mode_command_bg, gui = "bold" },
+                local m = vim.fn.mode()
+                local map = {
+                  n = colors.mode_normal,
+                  i = colors.mode_insert,
+                  v = colors.mode_visual,
+                  V = colors.mode_visual,
+                  R = colors.mode_replace,
+                  c = colors.mode_command,
                 }
-                return colors_map[mode] or { fg = colors.fg, bg = colors.bg }
+                return map[m] or { fg = colors.fg, bg = colors.bg }
               end,
+              padding = { left = 2, right = 2 },
             },
           },
           lualine_b = {
-            { "branch", icon = "", color = { fg = colors.yellow } },
+            {
+              "branch",
+              icon = "",
+              color = { fg = colors.yellow, bg = colors.gray, gui = "bold" },
+              padding = { left = 2, right = 2 },
+            },
             {
               "diff",
-              symbols = { added = " ", modified = "󰏬 ", removed = "󰅖 " },
-              color = { fg = colors.cyan },
+              symbols = { added = " ", modified = " ", removed = " " },
+              color = { fg = colors.cyan, bg = colors.gray },
+              padding = { left = 2, right = 2 },
             },
           },
           lualine_c = {
-            { "filename", path = 1, symbols = { modified = "●", readonly = "" }, color = { fg = colors.fg } },
-            {
-              "diagnostics",
-              symbols = { error = " ", warn = " ", info = " ", hint = "󰌵 " },
-              color = { fg = colors.red },
-            },
+            { "filename", path = 1, color = { fg = colors.fg, bg = colors.gray }, padding = { left = 1, right = 1 } },
+            { animated_dots, padding = { left = 1, right = 1 } },
           },
           lualine_x = {
-            { "filetype", icon_only = true, color = { fg = colors.blue } },
-            { "encoding", color = { fg = colors.gray } },
-            { "fileformat", color = { fg = colors.gray } },
+            {
+              "diagnostics",
+              symbols = { error = " ", warn = " ", info = " " },
+              color = { fg = colors.red, bg = colors.gray },
+              padding = { left = 2, right = 2 },
+            },
+            {
+              "filetype",
+              icon_only = true,
+              color = { fg = colors.blue, bg = colors.gray },
+              padding = { left = 2, right = 2 },
+            },
           },
           lualine_y = {
-            { "progress", color = { fg = colors.green } },
+            { "progress", color = { fg = colors.green, bg = colors.gray }, padding = { left = 2, right = 2 } },
           },
           lualine_z = {
-            { "location", icon = "󰆤", color = { fg = colors.bg, bg = colors.cyan, gui = "bold" } },
+            {
+              "location",
+              icon = "",
+              color = { fg = colors.bg, bg = colors.cyan, gui = "bold" },
+              padding = { left = 2, right = 2 },
+            },
           },
         },
         inactive_sections = {
           lualine_a = {},
           lualine_b = {},
-          lualine_c = { { "filename", color = { fg = colors.gray } } },
-          lualine_x = { { "location", color = { fg = colors.gray } } },
+          lualine_c = { { "filename", color = { fg = colors.gray, bg = colors.bg } } },
+          lualine_x = { { "location", color = { fg = colors.gray, bg = colors.bg } } },
           lualine_y = {},
           lualine_z = {},
         },
         extensions = { "neo-tree", "lazy" },
       }
-
-      return config
     end,
     config = function(_, opts)
       require("lualine").setup(opts)
