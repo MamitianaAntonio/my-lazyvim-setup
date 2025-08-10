@@ -20,38 +20,29 @@ return {
         mode_visual = { fg = "#282c34", bg = "#c678dd" },
         mode_replace = { fg = "#282c34", bg = "#e06c75" },
         mode_command = { fg = "#282c34", bg = "#e5c07b" },
+
+        dark_purple = "#4b366e",
+        light_cyan = "#7fdbca",
       }
 
-      local function mode_icon(mode)
-        local icons = {
-          n = " ",
-          i = " ",
-          v = " ",
-          V = " ",
-          R = " ",
-          c = " ",
-        }
-        return icons[mode] or " "
-      end
-
-      -- Frames animation : points plus petits, serrés
-      local frames = {
-        "····",
-        "····",
-        "····",
-        "····",
+      -- Animation 3 icônes côte à côte (frames)
+      local animated_frames = {
+        "  ●",
+        " ● ",
+        "●  ",
+        "  ",
       }
       local current_frame = 1
 
-      local function animated_dots()
-        local dots = frames[current_frame]
-        current_frame = (current_frame % #frames) + 1
-        return "%#AnimatedDots#" .. dots .. "%*"
+      local function animated_three_icons()
+        local frame = animated_frames[current_frame]
+        current_frame = (current_frame % #animated_frames) + 1
+        return "%#AnimatedDots#" .. frame .. "%*"
       end
 
       vim.api.nvim_set_hl(0, "AnimatedDots", { fg = colors.purple, bg = colors.gray })
 
-      -- Timer moins fréquent (400ms)
+      -- Timer pour rafraîchir lualine toutes les 400ms
       local timer = vim.loop.new_timer()
       timer:start(
         0,
@@ -74,7 +65,16 @@ return {
             {
               "mode",
               fmt = function(str)
-                return mode_icon(vim.fn.mode()) .. str:sub(1, 1)
+                local icons = {
+                  n = "",
+                  i = "",
+                  v = "",
+                  V = "",
+                  R = "",
+                  c = "",
+                }
+                local icon = icons[vim.fn.mode()] or ""
+                return icon .. " " .. str:sub(1, 1):upper()
               end,
               color = function()
                 local m = vim.fn.mode()
@@ -88,7 +88,7 @@ return {
                 }
                 return map[m] or { fg = colors.fg, bg = colors.bg }
               end,
-              padding = { left = 2, right = 2 },
+              padding = { left = 2, right = 1 },
             },
           },
           lualine_b = {
@@ -96,49 +96,58 @@ return {
               "branch",
               icon = "",
               color = { fg = colors.yellow, bg = colors.gray, gui = "bold" },
-              padding = { left = 2, right = 2 },
+              padding = { left = 1, right = 1 },
             },
             {
               "diff",
-              symbols = { added = " ", modified = " ", removed = " " },
+              symbols = { added = "", modified = "", removed = "" },
               color = { fg = colors.cyan, bg = colors.gray },
-              padding = { left = 2, right = 2 },
+              padding = { left = 1, right = 1 },
             },
           },
           lualine_c = {
             { "filename", path = 1, color = { fg = colors.fg, bg = colors.gray }, padding = { left = 1, right = 1 } },
-            { animated_dots, padding = { left = 1, right = 1 } },
+            { animated_three_icons, padding = { left = 0, right = 1 } },
           },
           lualine_x = {
             {
               "diagnostics",
-              symbols = { error = " ", warn = " ", info = " " },
-              color = { fg = colors.red, bg = colors.gray },
-              padding = { left = 2, right = 2 },
+              symbols = { error = "", warn = "", info = "" },
+              color = { fg = colors.purple, bg = colors.dark_purple, gui = "bold" },
+              padding = { left = 1, right = 1 },
             },
             {
               "filetype",
-              icon_only = true,
-              color = { fg = colors.blue, bg = colors.gray },
-              padding = { left = 2, right = 2 },
+              icon_only = false,
+              color = { fg = colors.blue, bg = colors.gray, gui = "italic" },
+              padding = { left = 1, right = 1 },
             },
           },
           lualine_y = {
-            { "progress", color = { fg = colors.green, bg = colors.gray }, padding = { left = 2, right = 2 } },
+            {
+              "progress",
+              fmt = function()
+                return " %p%%"
+              end,
+              color = { fg = colors.green, bg = colors.gray, gui = "bold" },
+              padding = { left = 1, right = 2 },
+            },
           },
           lualine_z = {
             {
               "location",
               icon = "",
               color = { fg = colors.bg, bg = colors.cyan, gui = "bold" },
-              padding = { left = 2, right = 2 },
+              padding = { left = 1, right = 2 },
             },
           },
         },
         inactive_sections = {
           lualine_a = {},
           lualine_b = {},
-          lualine_c = { { "filename", color = { fg = colors.gray, bg = colors.bg } } },
+          lualine_c = {
+            { "filename", color = { fg = colors.gray, bg = colors.bg }, padding = { left = 1, right = 1 } },
+          },
           lualine_x = { { "location", color = { fg = colors.gray, bg = colors.bg } } },
           lualine_y = {},
           lualine_z = {},
