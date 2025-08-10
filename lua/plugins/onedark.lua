@@ -1,14 +1,16 @@
 return {
   "navarasu/onedark.nvim",
+  priority = 1000,
+  lazy = false,
   config = function()
     require("onedark").setup({
-      style = "darker", -- "dark", "darker", "cool", "warm", "warmer"
+      style = "cool", -- "dark", "darker", "cool", "warm", "warmer"
       transparent = false,
       term_colors = true,
       ending_tildes = false,
       cmp_itemkind_reverse = false,
 
-      -- Pas de style forcé
+      -- Désactivation des styles forcés
       code_style = {
         comments = "none",
         keywords = "none",
@@ -17,37 +19,29 @@ return {
         variables = "none",
       },
 
-      -- Palette sombre et élégante
+      -- Couleurs douces mais contrastées
       colors = {
-        bg0 = "#1b1f27", -- Fond principal
-        bg1 = "#222630", -- Fond secondaire
+        bg0 = "#1e222a", -- Fond principal
+        bg1 = "#262a33", -- Fond secondaire
         fg = "#c8ccd4", -- Texte
-        purple = "#bb9af7",
-        cyan = "#7dcfff",
+        purple = "#b88fe9",
+        cyan = "#56b6c2",
         green = "#9ece6a",
-        orange = "#ff9e64",
-        red = "#f7768e",
-        yellow = "#e0af68",
+        orange = "#d19a66",
+        red = "#e06c75",
+        yellow = "#e5c07b",
       },
 
-      -- Highlights personnalisés
+      -- Amélioration des highlights
       highlights = {
         CursorLine = { bg = "#2a2f3a" },
-        CursorLineNr = { fg = "#e0af68", bold = false },
+        CursorLineNr = { fg = "#e5c07b", bold = false },
         LineNr = { fg = "#5c6370" },
-        Search = { bg = "#e0af68", fg = "#1b1f27" },
+        Search = { bg = "#e5c07b", fg = "#282c34" },
         Visual = { bg = "#3e4451" },
-        MatchParen = { fg = "#bb9af7", bold = true },
-
-        -- Ligne verticale (colorcolumn)
-        ColorColumn = { bg = "#3e445180" },
-
-        -- Indent guides
-        IndentBlanklineChar = { fg = "#4b526380" },
-        IndentBlanklineContextChar = { fg = "#bb9af780" },
+        MatchParen = { fg = "#b88fe9" },
       },
 
-      -- Plugins intégrés
       plugins = {
         cmp = true,
         gitsigns = true,
