@@ -27,14 +27,17 @@ return {
 
       -- Animation 3 icônes côte à côte (frames)
       local animated_frames = {
-        "  ●",
-        " ● ",
-        "●  ",
-        "  ",
+        "  ●   ",
+        " ●    ●",
+        "●    ● ",
+        "   ●  ",
+        "  ●   ●",
+        " ●   ● ",
       }
+
       local current_frame = 1
 
-      local function animated_three_icons()
+      local function animated_six_icons()
         local frame = animated_frames[current_frame]
         current_frame = (current_frame % #animated_frames) + 1
         return "%#AnimatedDots#" .. frame .. "%*"
@@ -107,7 +110,7 @@ return {
           },
           lualine_c = {
             { "filename", path = 1, color = { fg = colors.fg, bg = colors.gray }, padding = { left = 1, right = 1 } },
-            { animated_three_icons, padding = { left = 0, right = 1 } },
+            { animated_six_icons, padding = { left = 0, right = 1 } },
           },
           lualine_x = {
             {
