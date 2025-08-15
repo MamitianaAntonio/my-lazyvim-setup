@@ -43,7 +43,7 @@ return {
         return "%#AnimatedDots#" .. frame .. "%*"
       end
 
-      vim.api.nvim_set_hl(0, "AnimatedDots", { fg = colors.purple, bg = colors.gray })
+      vim.api.nvim_set_hl(0, "AnimatedDots", { fg = colors.purple, bg = colors.bg })
 
       -- Timer pour rafraîchir lualine toutes les 400ms
       local timer = vim.loop.new_timer()
@@ -55,14 +55,51 @@ return {
         end)
       )
 
+      -- Frames glitch terminal
+      local glitch_frames = {
+        "[=     ]",
+        "[==    ]",
+        "[===   ]",
+        "[====  ]",
+        "[===== ]",
+        "[ =====]",
+        "[  ====]",
+        "[   ===]",
+        "[    ==]",
+        "[     =]",
+      }
+
+      local glitch_index = 1
+      local function animated_glitch()
+        local frame = glitch_frames[glitch_index]
+        glitch_index = (glitch_index % #glitch_frames) + 1
+        return "%#AnimatedGlitch#" .. frame .. "%*"
+      end
+
+      -- Couleur vert terminal
+      vim.api.nvim_set_hl(0, "AnimatedGlitch", { fg = colors.green, bg = colors.bg, bold = true })
+
+      -- Timer animation
+      local glitch_timer = vim.loop.new_timer()
+      glitch_timer:start(
+        0,
+        120,
+        vim.schedule_wrap(function()
+          vim.cmd("redrawstatus")
+        end)
+      )
+
       return {
         options = {
           icons_enabled = true,
           theme = nil,
-          component_separators = { left = "│", right = "│" },
-          section_separators = { left = "", right = "" },
+          component_separators = { left = "║", right = "║" },
+          section_separators = { left = "▓", right = "▓" },
           globalstatus = true,
+          disabled_filetypes = { "NvimTree", "packer" },
+          always_divide_middle = true,
         },
+
         sections = {
           lualine_a = {
             {
@@ -98,7 +135,7 @@ return {
             {
               "branch",
               icon = "",
-              color = { fg = colors.yellow, bg = colors.gray, gui = "bold" },
+              color = { fg = colors.blue, bg = colors.gray, gui = "bold" },
               padding = { left = 1, right = 1 },
             },
             {
@@ -110,7 +147,13 @@ return {
           },
           lualine_c = {
             { "filename", path = 1, color = { fg = colors.fg, bg = colors.gray }, padding = { left = 1, right = 1 } },
-            { animated_six_icons, padding = { left = 0, right = 1 } },
+            { animated_six_icons, padding = { left = 1, right = 1 } },
+            {
+              function()
+                return animated_glitch()
+              end,
+              padding = { left = 1, right = 0 },
+            },
           },
           lualine_x = {
             {
