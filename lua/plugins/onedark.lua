@@ -4,7 +4,7 @@ return {
   lazy = false,
   config = function()
     require("onedark").setup({
-      style = "cool", -- "dark", "darker", "cool", "warm", "warmer"
+      style = "darker", -- "dark", "darker", "cool", "warm", "warmer"
       transparent = false,
       term_colors = true,
       ending_tildes = false,
