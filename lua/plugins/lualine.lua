@@ -57,16 +57,16 @@ return {
 
       -- Frames glitch terminal
       local glitch_frames = {
-        "[=     ]",
-        "[==    ]",
-        "[===   ]",
-        "[====  ]",
-        "[===== ]",
-        "[ =====]",
-        "[  ====]",
-        "[   ===]",
-        "[    ==]",
-        "[     =]",
+        "⟦0101001⟧",
+        "⟦1010010⟧",
+        "⟦1100101⟧",
+        "⟦0010110⟧",
+        "⟦0111001⟧",
+        "⟦1001110⟧",
+        "⟦0110111⟧",
+        "⟦1011100⟧",
+        "⟦1101011⟧",
+        "⟦0011100⟧",
       }
 
       local glitch_index = 1
@@ -93,7 +93,7 @@ return {
         options = {
           icons_enabled = true,
           theme = nil,
-          component_separators = { left = "║", right = "║" },
+          component_separators = { left = "▏", right = "▕" },
           section_separators = { left = "▓", right = "▓" },
           globalstatus = true,
           disabled_filetypes = { "NvimTree", "packer" },
@@ -147,7 +147,7 @@ return {
           },
           lualine_c = {
             { "filename", path = 1, color = { fg = colors.fg, bg = colors.gray }, padding = { left = 1, right = 1 } },
-            { animated_six_icons, padding = { left = 1, right = 1 } },
+            { animated_six_icons, padding = { left = 1, right = 2 } },
             {
               function()
                 return animated_glitch()
