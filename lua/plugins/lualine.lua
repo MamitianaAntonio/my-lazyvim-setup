@@ -5,81 +5,51 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = function()
       local colors = {
-        bg = "#282c34",
-        fg = "#abb2bf",
-        gray = "#3e4451",
-        red = "#e06c75",
-        green = "#98c379",
-        yellow = "#e5c07b",
-        blue = "#61afef",
-        purple = "#c678dd",
-        cyan = "#56b6c2",
+        bg = "#1e1e2e",
+        fg = "#cdd6f4",
+        gray = "#313244",
+        red = "#f38ba8",
+        green = "#a6e3a1",
+        yellow = "#f9e2af",
+        blue = "#89b4fa",
+        purple = "#cba6f7",
+        cyan = "#94e2d5",
+        orange = "#fab387",
 
-        mode_normal = { fg = "#282c34", bg = "#61afef" },
-        mode_insert = { fg = "#282c34", bg = "#98c379" },
-        mode_visual = { fg = "#282c34", bg = "#c678dd" },
-        mode_replace = { fg = "#282c34", bg = "#e06c75" },
-        mode_command = { fg = "#282c34", bg = "#e5c07b" },
-
-        dark_purple = "#4b366e",
-        light_cyan = "#7fdbca",
+        mode_normal = { fg = "#1e1e2e", bg = "#89b4fa" },
+        mode_insert = { fg = "#1e1e2e", bg = "#a6e3a1" },
+        mode_visual = { fg = "#1e1e2e", bg = "#cba6f7" },
+        mode_replace = { fg = "#1e1e2e", bg = "#f38ba8" },
+        mode_command = { fg = "#1e1e2e", bg = "#fab387" },
       }
 
-      -- Animation 3 icônes côte à côte (frames)
-      local animated_frames = {
-        "  ●   ",
-        " ●    ●",
-        "●    ● ",
-        "   ●  ",
-        "  ●   ●",
-        " ●   ● ",
-      }
-
+      -- Animations
+      local animated_frames = { "  ", "  ", "  " }
       local current_frame = 1
-
-      local function animated_six_icons()
+      local function animated_dots()
         local frame = animated_frames[current_frame]
         current_frame = (current_frame % #animated_frames) + 1
-        return "%#AnimatedDots#" .. frame .. "%*"
+        return "%#animateddots#" .. frame .. "%*"
       end
-
-      vim.api.nvim_set_hl(0, "AnimatedDots", { fg = colors.purple, bg = colors.bg })
-
-      -- Timer pour rafraîchir lualine toutes les 400ms
+      vim.api.nvim_set_hl(0, "animateddots", { fg = colors.purple, bg = colors.bg })
       local timer = vim.loop.new_timer()
       timer:start(
         0,
-        400,
+        300,
         vim.schedule_wrap(function()
           vim.cmd("redrawstatus")
         end)
       )
 
-      -- Frames glitch terminal
-      local glitch_frames = {
-        "⟦0101001⟧",
-        "⟦1010010⟧",
-        "⟦1100101⟧",
-        "⟦0010110⟧",
-        "⟦0111001⟧",
-        "⟦1001110⟧",
-        "⟦0110111⟧",
-        "⟦1011100⟧",
-        "⟦1101011⟧",
-        "⟦0011100⟧",
-      }
-
+      -- Glitch
+      local glitch_frames = { "010101", "101010", "110011", "001100", "111000", "000111" }
       local glitch_index = 1
       local function animated_glitch()
         local frame = glitch_frames[glitch_index]
         glitch_index = (glitch_index % #glitch_frames) + 1
-        return "%#AnimatedGlitch#" .. frame .. "%*"
+        return "%#animatedglitch#" .. frame .. "%*"
       end
-
-      -- Couleur vert terminal
-      vim.api.nvim_set_hl(0, "AnimatedGlitch", { fg = colors.green, bg = colors.bg, bold = true })
-
-      -- Timer animation
+      vim.api.nvim_set_hl(0, "animatedglitch", { fg = colors.cyan, bg = colors.bg, bold = true })
       local glitch_timer = vim.loop.new_timer()
       glitch_timer:start(
         0,
@@ -93,28 +63,28 @@ return {
         options = {
           icons_enabled = true,
           theme = nil,
-          component_separators = { left = "▏", right = "▕" },
-          section_separators = { left = "▓", right = "▓" },
+          component_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
           globalstatus = true,
           disabled_filetypes = { "NvimTree", "packer" },
-          always_divide_middle = true,
         },
 
         sections = {
+          -- Mode amélioré
           lualine_a = {
             {
               "mode",
               fmt = function(str)
                 local icons = {
-                  n = "",
-                  i = "",
-                  v = "",
-                  V = "",
-                  R = "",
-                  c = "",
+                  n = " Normal",
+                  i = " Insert",
+                  v = " Visual",
+                  V = " V-Line",
+                  ["␖"] = " V-Block",
+                  c = " Command",
+                  R = " Replace",
                 }
-                local icon = icons[vim.fn.mode()] or ""
-                return icon .. " " .. str:sub(1, 1):upper()
+                return icons[vim.fn.mode()] or str
               end,
               color = function()
                 local m = vim.fn.mode()
@@ -123,6 +93,7 @@ return {
                   i = colors.mode_insert,
                   v = colors.mode_visual,
                   V = colors.mode_visual,
+                  ["␖"] = colors.mode_visual,
                   R = colors.mode_replace,
                   c = colors.mode_command,
                 }
@@ -131,74 +102,65 @@ return {
               padding = { left = 2, right = 1 },
             },
           },
+
           lualine_b = {
-            {
-              "branch",
-              icon = "",
-              color = { fg = colors.blue, bg = colors.gray, gui = "bold" },
-              padding = { left = 1, right = 1 },
-            },
-            {
-              "diff",
-              symbols = { added = "", modified = "", removed = "" },
-              color = { fg = colors.cyan, bg = colors.gray },
-              padding = { left = 1, right = 1 },
-            },
+            { "branch", icon = "", color = { fg = colors.blue, bg = colors.gray, gui = "bold" } },
+            { "diff", symbols = { added = " ", modified = " ", removed = " " } },
           },
+
           lualine_c = {
-            { "filename", path = 1, color = { fg = colors.fg, bg = colors.gray }, padding = { left = 1, right = 1 } },
-            { animated_six_icons, padding = { left = 1, right = 2 } },
-            {
-              function()
-                return animated_glitch()
-              end,
-              padding = { left = 1, right = 0 },
-            },
+            { "filename", path = 1 },
+            { animated_dots },
+            { animated_glitch },
           },
+
           lualine_x = {
             {
-              "diagnostics",
-              symbols = { error = "", warn = "", info = "" },
-              color = { fg = colors.purple, bg = colors.dark_purple, gui = "bold" },
-              padding = { left = 1, right = 1 },
+              function()
+                return vim.fn.reg_recording() ~= "" and " " .. vim.fn.reg_recording() or ""
+              end,
+              color = { fg = colors.orange, gui = "bold" },
             },
             {
-              "filetype",
-              icon_only = false,
-              color = { fg = colors.blue, bg = colors.gray, gui = "italic" },
-              padding = { left = 1, right = 1 },
+              function()
+                local clients = vim.lsp.get_active_clients()
+                if #clients > 0 then
+                  return " LSP:" .. clients[1].name
+                end
+                return ""
+              end,
+              color = { fg = colors.cyan },
             },
+            { "diagnostics", symbols = { error = " ", warn = " ", info = " " } },
           },
+
           lualine_y = {
             {
               "progress",
               fmt = function()
                 return " %p%%"
               end,
-              color = { fg = colors.green, bg = colors.gray, gui = "bold" },
-              padding = { left = 1, right = 2 },
             },
+            { "encoding", icon = "" },
           },
+
           lualine_z = {
+            { "location", icon = "" },
             {
-              "location",
-              icon = "",
-              color = { fg = colors.bg, bg = colors.cyan, gui = "bold" },
-              padding = { left = 1, right = 2 },
+              function()
+                return " " .. os.date("%H:%M")
+              end,
+              color = { fg = colors.green, gui = "bold" },
             },
           },
         },
+
         inactive_sections = {
-          lualine_a = {},
-          lualine_b = {},
-          lualine_c = {
-            { "filename", color = { fg = colors.gray, bg = colors.bg }, padding = { left = 1, right = 1 } },
-          },
-          lualine_x = { { "location", color = { fg = colors.gray, bg = colors.bg } } },
-          lualine_y = {},
-          lualine_z = {},
+          lualine_c = { { "filename", color = { fg = colors.gray } } },
+          lualine_x = { { "location" } },
         },
-        extensions = { "neo-tree", "lazy" },
+
+        extensions = { "neo-tree", "lazy", "mason" },
       }
     end,
     config = function(_, opts)
