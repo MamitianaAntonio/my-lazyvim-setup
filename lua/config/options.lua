@@ -1,3 +1,14 @@
--- Options are automatically loaded before lazy.nvim startup
--- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
--- Add any additional options here
+vim.opt.number = true -- Show line numbers
+vim.opt.relativenumber = true -- Relative line numbers for motions
+vim.opt.wrap = false -- Disable line wrap
+vim.opt.scrolloff = 8 -- Keep 8 lines above/below cursor
+vim.opt.sidescrolloff = 8 -- Keep 8 columns to the left/right
+vim.opt.signcolumn = "yes" -- Always show sign column
+vim.opt.ignorecase = true -- Case insensitive search
+vim.opt.smartcase = true -- Unless uppercase letters
+vim.opt.updatetime = 250 -- Faster completion
+vim.opt.timeoutlen = 400 -- Faster key timeout
+vim.opt.cursorline = true -- Highlight current line
+vim.opt.splitbelow = true -- Horizontal splits below
+vim.opt.splitright = true -- Vertical splits to the right
+vim.opt.termguicolors = true -- Better colors
