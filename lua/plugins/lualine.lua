@@ -5,22 +5,23 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = function()
       local colors = {
-        bg = "#1e1e2e",
-        fg = "#cdd6f4",
-        gray = "#313244",
-        red = "#f38ba8",
-        green = "#a6e3a1",
-        yellow = "#f9e2af",
-        blue = "#89b4fa",
-        purple = "#cba6f7",
-        cyan = "#94e2d5",
-        orange = "#fab387",
-
-        mode_normal = { fg = "#1e1e2e", bg = "#89b4fa" },
-        mode_insert = { fg = "#1e1e2e", bg = "#a6e3a1" },
-        mode_visual = { fg = "#1e1e2e", bg = "#cba6f7" },
-        mode_replace = { fg = "#1e1e2e", bg = "#f38ba8" },
-        mode_command = { fg = "#1e1e2e", bg = "#fab387" },
+        -- Main palette
+        bg = "#1d1d2c", -- Main background, slightly darker
+        fg = "#cdd6f4", -- Text, light and readable
+        gray = "#303346", -- Gray, for secondary elements
+        red = "#f2879b", -- Red, softer
+        green = "#a8e3a3", -- Green, soft and bright
+        yellow = "#f9dea0", -- Yellow, gentle
+        blue = "#8cb6fa", -- Blue, lighter and pastel
+        purple = "#cfa7f7", -- Purple, softer
+        cyan = "#95e3d6", -- Cyan, light
+        orange = "#fbb88a", -- Orange, warmer
+        -- Mode highlighs (for statusline or Lualine)
+        mode_normal = { fg = "#1d1d2c", bg = "#8cb6fa" }, -- Normal mode
+        mode_insert = { fg = "#1d1d2c", bg = "#a8e3a3" }, -- Insert mode
+        mode_visual = { fg = "#1d1d2c", bg = "#cfa7f7" }, -- Visual mode
+        mode_replace = { fg = "#1d1d2c", bg = "#f2879b" }, -- Replace mode
+        mode_command = { fg = "#1d1d2c", bg = "#fbb88a" }, -- Command mode
       }
 
       -- Animations
@@ -49,7 +50,7 @@ return {
         glitch_index = (glitch_index % #glitch_frames) + 1
         return "%#animatedglitch#" .. frame .. "%*"
       end
-      vim.api.nvim_set_hl(0, "animatedglitch", { fg = colors.cyan, bg = colors.bg, bold = true })
+      vim.api.nvim_set_hl(0, "animatedglitch", { fg = colors.cyan, bg = colors.gray, bold = true })
       local glitch_timer = vim.loop.new_timer()
       glitch_timer:start(
         0,
